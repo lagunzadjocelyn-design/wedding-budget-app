@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#6b0f2a">
+  <meta name="description" content="Jocelyn & Romeo Jr.'s wedding budget and expense tracker.">
+  <title>Our Wedding Fund</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon.svg">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <header class="topbar">
+      <div><div class="eyebrow">23 JANUARY 2027</div><h1>Jocelyn <span>&</span> Romeo Jr.</h1><p>Wedding Budget & Expenses</p></div>
+      <button id="installBtn" class="ghost-btn hidden" type="button">Install</button>
+    </header>
+    <main>
+      <section class="hero-card" aria-labelledby="balanceLabel">
+        <div class="hero-copy">
+          <p id="balanceLabel" class="label">Available wedding fund</p>
+          <h2 id="remainingMoney">₱206,690.00</h2>
+          <div class="hero-meta">
+            <span><strong id="totalIn">₱305,918.00</strong> money in</span>
+            <span><strong id="totalOut">₱99,228.00</strong> money out</span>
+          </div>
+        </div>
+        <div class="ring-wrap" aria-hidden="true"><div class="ring" id="fundRing"><div><span id="fundPct">68%</span><small>left</small></div></div></div>
+      </section>
+
+      <section class="quick-actions">
+        <button class="action-card add" data-open="moneyInModal" type="button"><span class="action-icon">＋</span><span>Add money</span><small>Celebrate every contribution</small></button>
+        <button class="action-card spend" data-open="expenseModal" type="button"><span class="action-icon">−</span><span>Add expense</span><small>Track every peso spent</small></button>
+        <button class="action-card budget" data-open="budgetModal" type="button"><span class="action-icon">♡</span><span>Add budget item</span><small>Create or update a category</small></button>
+      </section>
+
+      <section class="stats-grid">
+        <article class="stat-card"><p>Supplier contracts</p><strong id="contractTotal">₱389,000.00</strong><small id="contractPaid">₱5,000.00 paid so far</small></article>
+        <article class="stat-card"><p>Supplier balance</p><strong id="contractBalance">₱384,000.00</strong><small>Outstanding contracted amount</small></article>
+        <article class="stat-card"><p>Wedding fund vs contracts</p><strong id="fundGap">−₱182,310.00</strong><small id="fundGapNote">More funding needed to cover current contracts</small></article>
+      </section>
+
+      <section class="panel">
+        <div class="section-head"><div><p class="eyebrow">PLAN</p><h3>Budget categories</h3></div><button id="showAllBudgets" class="text-btn" type="button">View all</button></div>
+        <div id="budgetList" class="budget-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="section-head"><div><p class="eyebrow">RECENT</p><h3>Money movement</h3></div><button id="exportBtn" class="text-btn" type="button">Backup</button></div>
+        <div class="filter-row">
+          <button class="chip active" data-filter="all" type="button">All</button>
+          <button class="chip" data-filter="in" type="button">Money in</button>
+          <button class="chip" data-filter="out" type="button">Expenses</button>
+        </div>
+        <div id="transactionList" class="transaction-list"></div>
+      </section>
+
+      <section class="panel slim-panel">
+        <div class="section-head"><div><p class="eyebrow">APP</p><h3>Offline & notifications</h3></div></div>
+        <p class="muted">Your entries stay on this device and the app works offline after the first load.</p>
+        <div class="inline-actions">
+          <button id="notifyBtn" class="secondary-btn" type="button">Enable notifications</button>
+          <label class="secondary-btn file-label" for="importInput">Restore backup</label>
+          <input id="importInput" class="visually-hidden" type="file" accept="application/json">
+        </div>
+      </section>
+    </main>
+    <footer>Made for the wedding countdown ♡ <span id="countdown"></span></footer>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="celebrationLayer" class="celebration-layer" aria-hidden="true"></div>
+
+  <dialog id="moneyInModal" class="modal">
+    <form id="moneyInForm" method="dialog" class="modal-card">
+      <div class="modal-head"><div><p class="eyebrow">MONEY IN</p><h3>Add to our wedding fund</h3></div><button class="icon-btn close" type="button">×</button></div>
+      <label>Who added it?<select name="person" required><option value="Bride">Bride</option><option value="Groom">Groom</option><option value="Gift / Other">Gift / Other</option></select></label>
+      <label>Amount<input name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="10000" required></label>
+      <label>Date<input name="date" type="date" required></label>
+      <label>Note <span>(optional)</span><input name="note" type="text" maxlength="80" placeholder="September contribution"></label>
+      <button class="primary-btn" type="submit">Add money ✨</button>
+    </form>
+  </dialog>
+
+  <dialog id="expenseModal" class="modal">
+    <form id="expenseForm" method="dialog" class="modal-card">
+      <div class="modal-head"><div><p class="eyebrow">MONEY OUT</p><h3>Record an expense</h3></div><button class="icon-btn close" type="button">×</button></div>
+      <label>Expense<input name="item" type="text" maxlength="80" placeholder="e.g. Feeds" required></label>
+      <label>Amount<input name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="3175" required></label>
+      <label>Date<input name="date" type="date" required></label>
+      <label>Category<select name="category" id="expenseCategory"></select></label>
+      <button class="primary-btn danger" type="submit">Deduct expense</button>
+    </form>
+  </dialog>
+
+  <dialog id="budgetModal" class="modal">
+    <form id="budgetForm" method="dialog" class="modal-card">
+      <div class="modal-head"><div><p class="eyebrow">BUDGET</p><h3>Add or update a budget item</h3></div><button class="icon-btn close" type="button">×</button></div>
+      <label>Item / category<input name="item" type="text" maxlength="80" placeholder="e.g. Reception styling" required></label>
+      <label>Supplier <span>(optional)</span><input name="supplier" type="text" maxlength="80" placeholder="Supplier name"></label>
+      <label>Contract / budget amount<input name="amount" type="number" inputmode="decimal" min="0" step="0.01" required></label>
+      <label>Amount already paid<input name="paid" type="number" inputmode="decimal" min="0" step="0.01" value="0"></label>
+      <button class="primary-btn" type="submit">Save budget item 🎉</button>
+    </form>
+  </dialog>
+
+  <dialog id="budgetsModal" class="modal wide-modal">
+    <div class="modal-card">
+      <div class="modal-head"><div><p class="eyebrow">FULL PLAN</p><h3>All budget categories</h3></div><button class="icon-btn close" type="button">×</button></div>
+      <div id="allBudgetList" class="budget-list"></div>
+    </div>
+  </dialog>
+
+  <script src="./app.js"></script>
+</body>
+</html>
