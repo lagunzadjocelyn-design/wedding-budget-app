@@ -91,7 +91,22 @@
       <label>Amount<input name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="3175" required></label>
       <label>Date<input name="date" type="date" required></label>
       <label>Category<select name="category" id="expenseCategory"></select></label>
-      <button class="primary-btn danger" type="submit">Deduct expense</button>
+      <label class="toggle-row"><input name="affectsFund" type="checkbox" checked><span><strong>Deduct from available wedding fund</strong><small>Turn this off if the expense was paid separately but should still count under its category.</small></span></label>
+      <button class="primary-btn danger" type="submit">Save expense</button>
+    </form>
+  </dialog>
+
+  <dialog id="editExpenseModal" class="modal">
+    <form id="editExpenseForm" method="dialog" class="modal-card">
+      <div class="modal-head"><div><p class="eyebrow">EDIT EXPENSE</p><h3>Update paid expense</h3></div><button class="icon-btn close" type="button">×</button></div>
+      <input name="id" type="hidden">
+      <label>Expense<input name="item" type="text" maxlength="80" required></label>
+      <label>Amount<input name="amount" type="number" inputmode="decimal" min="0.01" step="0.01" required></label>
+      <label>Date<input name="date" type="date" required></label>
+      <label>Category<select name="category" id="editExpenseCategory"></select></label>
+      <label class="toggle-row"><input name="affectsFund" type="checkbox"><span><strong>Deduct from available wedding fund</strong><small>Off = track this payment in the category without reducing your wedding-fund balance.</small></span></label>
+      <label class="toggle-row"><input name="affectsBudget" type="checkbox" checked><span><strong>Count toward category spending</strong><small>Keep this on when this payment should reduce the remaining budget for the selected category.</small></span></label>
+      <button class="primary-btn" type="submit">Save changes</button>
     </form>
   </dialog>
 
